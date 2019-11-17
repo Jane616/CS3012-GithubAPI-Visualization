@@ -1,6 +1,7 @@
 from github import Github
 from datetime import datetime
 from datetime import time
+from github.GithubException import BadCredentialsException
 
 #class for storing language information
 class Lang:
@@ -38,11 +39,20 @@ def company_query(g, keyword):
 
 
 #initialze github access
-print('please input your username: ')
-user_name = input()
-print('please input your password: ')
-password = input()
-g = Github(user_name, password)
+while True:
+  print('please input your username: ')
+  user_name = input()
+  print('please input your password: ')
+  password = input()
+  try:
+    g = Github(user_name, password)
+    g.get_rate_limit() #test if it raise BadCredentialsException
+  except BadCredentialsException:
+      print('login information not valid!')
+      continue
+  else:
+      print('login success')
+      break
 
 
 api_wait_search(g)
