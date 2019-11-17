@@ -2,6 +2,19 @@ from github import Github
 from datetime import datetime
 from datetime import time
 
+#class for storing language information
+class Lang:
+  def __init__(self, name, count):
+    self.name = name
+    self.count = count
+
+#class for storing github account information
+class Account:
+  def __init__(self, login, repos):
+    self.login = login
+    self.repos = repos
+    self.languages = [] #a list of languages calculated from account's repos
+
 #pause program if about to exceed rate limit
 def api_wait_search(git):
   limits = git.get_rate_limit()
@@ -17,7 +30,10 @@ def api_wait_search(git):
 def company_query(g, keyword):
     query = f'"{keyword}" in:org type:user repos:30..50'
     result = g.search_users(query)
-    return result
+    accounts = []
+    for user in result:
+      accounts.append(Account(user.login, user.repos_url))
+    return accounts
 
 
 
@@ -33,11 +49,9 @@ api_wait_search(g)
 #search microsoft employees
 keyword = 'microsoft'
 result = company_query(g, keyword)
-print(f'Found {result.totalCount} {keyword} employees')
+print(f'Found {len(result)} {keyword} employees')
 api_wait_search(g)
 
-
-#print info
-for user in result:
-    print(f'login: {user.login}')
-    print(f'repos_url: {user.repos_url}\n')
+for user in result[:2]:
+  print(f'login: {user.login}')
+  print(f'repos: {user.repos}')
