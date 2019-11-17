@@ -1,6 +1,6 @@
 from github import Github
 from datetime import datetime
-from datetime import time
+import time
 from github.GithubException import BadCredentialsException
 
 #class for storing language information
@@ -16,11 +16,11 @@ class Account:
     self.repos = repos
     self.languages = [] #a list of languages calculated from account's repos
 
-#pause program if about to exceed rate limit
+#pause program if rate limit is not full
 def api_wait_search(git):
   limits = git.get_rate_limit()
   print(f'remaining limit: {limits.search.remaining}')
-  if limits.search.remaining <= 2:
+  if limits.search.remaining < 30:
     seconds = (limits.search.reset - datetime.now()).total_seconds()
     print ("Waiting for %d seconds ..." % (seconds))
     time.sleep(seconds)
@@ -54,14 +54,18 @@ while True:
       print('login success')
       break
 
-
-api_wait_search(g)
 #search microsoft employees
-keyword = 'microsoft'
-result = company_query(g, keyword)
-print(f'Found {len(result)} {keyword} employees')
 api_wait_search(g)
+keyword = 'microsoft'
+microsoft_users = company_query(g, keyword)
+print(f'Found {len(microsoft_users)} {keyword} employees')
 
-for user in result[:2]:
+#search google employees
+api_wait_search(g)
+keyword = 'google'
+google_users = company_query(g, keyword)
+print(f'Found {len(google_users)} {keyword} employees')
+
+for user in google_users[:2]:
   print(f'login: {user.login}')
   print(f'repos: {user.repos}')
