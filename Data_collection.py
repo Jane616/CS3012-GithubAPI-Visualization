@@ -22,10 +22,11 @@ def company_query(g, keyword):
 
 
 #initialze github access
-#c_id = '2b9f6e2c97d4a2dc6c67'
-#c_secret = '2b9f6e2c97d4a2dc6c67'
-access_token = '8e3db69a6c3c3999b38722dfc0419c784adb8f5b'
-g = Github(access_token)
+print('please input your username: ')
+user_name = input()
+print('please input your password: ')
+password = input()
+g = Github(user_name, password)
 
 
 api_wait_search(g)
