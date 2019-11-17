@@ -1,10 +1,11 @@
 from github import Github
 
 #initialze github access
-#access_token = '9b0780e14a2d6ac8aab4aca1096ed3a6855fb8ba'
-print('please input personal access token: ')
-access_token = input()
-g = Github(access_token)
+print('please input your username: ')
+user_name = input()
+print('please input your password: ')
+password = input()
+g = Github(user_name, password)
 
 #get remaining rate limit
 rate_limit = g.get_rate_limit()
