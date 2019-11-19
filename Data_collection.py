@@ -2,6 +2,7 @@ from github import Github
 from datetime import datetime
 import time
 from github.GithubException import BadCredentialsException
+from Database_store import *
 
 #class for storing language information
 class Lang:
@@ -9,12 +10,19 @@ class Lang:
     self.name = name
     self.count = count
 
+#class for storing repository information
+class Repo:
+  def __init__(self, name, stargazer):
+    self.name = name
+    self.stargazer = stargazer
+    self.languages = []
+
 #class for storing github account information
 class Account:
   def __init__(self, login, repos):
     self.login = login
-    self.repos = repos
-    self.languages = [] #a list of languages calculated from account's repos
+    self.repos_url = repos
+    self.repos = [] #a list of accounts' repos
 
 #pause program if rate limit is not full
 def api_wait_search(git):
@@ -36,7 +44,7 @@ def company_query(g, keyword):
       accounts.append(Account(user.login, user.repos_url))
     return accounts
 
-
+database_test()
 
 #initialze github access
 while True:
@@ -68,4 +76,4 @@ print(f'Found {len(google_users)} {keyword} employees')
 
 for user in google_users[:2]:
   print(f'login: {user.login}')
-  print(f'repos: {user.repos}')
+  print(f'repos: {user.repos_url}')
