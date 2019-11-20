@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'collect.apps.CollectConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,7 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'GithubVisualization.urls'
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+#BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
