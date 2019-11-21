@@ -51,7 +51,8 @@ def company_query(g, keyword):
 
 def repo_query(g, user):
     query = f'user:"{user}""'
-    result = g.search_repositories(query)
+    result = g.get_user(login = user).get_repos()
+    #result = g.search_repositories(query)
     return result
     count = 0
     for repo in result:
@@ -63,9 +64,10 @@ def repo_query(g, user):
       with urllib.request.urlopen(repo.languages_url) as url:
         data = json.loads(url.read().decode())
         for i in data.keys():
-          c = int(data[i])
-          l = Lang(repo = repo.name, language = i, count = c)
-          l.save()
+          if data[i].isdigit():
+            c = int(data[i])
+            l = Lang(repo = repo.name, language = i, count = c)
+            l.save()
       count = count + 1
       if (count > 25):
         api_wait_search(g)

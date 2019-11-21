@@ -24,18 +24,20 @@ def index(request):
     password = 'Jane@990616'
     g = Github(user_name, password)
 
-    """
+    
     api_wait_search(g)
     keyword = 'microsoft'
     microsoft_users = company_query(g, keyword)
     print(f'Found {len(microsoft_users)} {keyword} employees')
-    """
+    
     keyword = 'google'
     google_users = company_query(g, keyword)
     print(f'Found {len(google_users)} {keyword} employees')
     api_wait_search(g)
-    #print('new sleeping for 50 seconds')
+    #print('new sleeping for 50 seconds to reset search limit')
     #time.sleep(50)
+
+    print(microsoft_users[len(microsoft_users) - 1].login)
 
     """
     for user in microsoft_users:
@@ -46,9 +48,15 @@ def index(request):
         u = User(company = "google", login = user.login)
         u.save()
     """
-    for user in google_users[:2]:
+
+    
+    count = 0
+    users = google_users + microsoft_users
+    for user in users:
         result = repo_query(g, user.login)
-        count = 0
+        print(f'recording user: {user.login}')
+        print(f'repo count: {result.totalCount}')
+
         for repo in result:
             repo_name = repo.name
             print(f'recording repo: {repo_name}')
@@ -62,12 +70,15 @@ def index(request):
             data = response.json()
             #data = json.loads(response.json().decode())
             for i in data.keys():
-                c = int(data[i])
-                l = Lang(repo = repo.name, language = i, count = c)
-                l.save()
+                if str(data[i]).isdigit():
+                    c = int(data[i])
+                    l = Lang(repo = repo.name, language = i, count = c)
+                    l.save()
+                
             count = count + 1
-                #if (count > 25):
-            api_wait_search(g)
-                #    count = 0
+            #print(count)
+            if (count > 25):
+                api_wait_search(g)
+                count = 0
     
     return render(request, 'collect/collect.html', {'message': "done!"})
