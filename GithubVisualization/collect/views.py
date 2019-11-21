@@ -7,8 +7,13 @@ import os
 import logging
 from .Data_collection import *
 from .models import *
+import time
+import urllib.request, json
+from urllib.request import Request
+import requests
 
 # Create your views here.
+
 
 def index(request):
     #BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -19,16 +24,20 @@ def index(request):
     password = 'Jane@990616'
     g = Github(user_name, password)
 
+    """
     api_wait_search(g)
     keyword = 'microsoft'
     microsoft_users = company_query(g, keyword)
     print(f'Found {len(microsoft_users)} {keyword} employees')
-
-    api_wait_search(g)
+    """
     keyword = 'google'
     google_users = company_query(g, keyword)
     print(f'Found {len(google_users)} {keyword} employees')
+    api_wait_search(g)
+    #print('new sleeping for 50 seconds')
+    #time.sleep(50)
 
+    """
     for user in microsoft_users:
         u = User(company = "microsoft", login = user.login)
         u.save()
@@ -36,6 +45,29 @@ def index(request):
     for user in google_users:
         u = User(company = "google", login = user.login)
         u.save()
-    #print(User.objects.all())
+    """
+    for user in google_users[:2]:
+        result = repo_query(g, user.login)
+        count = 0
+        for repo in result:
+            repo_name = repo.name
+            print(f'recording repo: {repo_name}')
+            stargazer = int(repo.stargazers_count)
+            r = Repo(username = user.login, repo_name = repo_name, stargazer = stargazer)
+            r.save()
+            #a = user.login + '/' + repo_name
+            #access language information
+            response = requests.get(repo.languages_url,
+                            auth=requests.auth.HTTPBasicAuth(user_name, password))
+            data = response.json()
+            #data = json.loads(response.json().decode())
+            for i in data.keys():
+                c = int(data[i])
+                l = Lang(repo = repo.name, language = i, count = c)
+                l.save()
+            count = count + 1
+                #if (count > 25):
+            api_wait_search(g)
+                #    count = 0
     
     return render(request, 'collect/collect.html', {'message': "done!"})

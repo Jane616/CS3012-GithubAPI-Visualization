@@ -8,11 +8,33 @@ class User(models.Model):
         return self.company + ' - ' + self.login
 
 class Repo(models.Model):
-    login = models.ForeignKey(User, on_delete=models.CASCADE)
+    """def __init__(self, user, repo, star):
+        self.username = user
+        self.repo_name = repo
+        self.stargazer = star
+"""
+    username = models.CharField(max_length = 255)
     repo_name = models.CharField(max_length = 255)
-    stargazer = models.IntegerField
+    stargazer = models.IntegerField(default=0)
+
+
+
+    def __str__(self):
+        return self.username + ' - ' + self.repo_name + ' - ' + str(self.stargazer)
 
 class Lang(models.Model):
-    repo_name = models.ForeignKey(Repo, on_delete=models.CASCADE)
+    '''
+    def __init__(self, repo, language, count):
+        self.repo = repo
+        self.language = language
+        self.count = count
+        '''
+
+
+    repo = models.CharField(max_length = 255)
     language = models.CharField(max_length = 50)
-    count = models.IntegerField
+    count = models.IntegerField(default=0)
+
+
+    def __str__(self):
+        return self.repo + ' - ' + self.language + " - " + str(self.count)

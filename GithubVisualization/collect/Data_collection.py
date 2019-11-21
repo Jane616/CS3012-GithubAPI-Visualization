@@ -2,7 +2,12 @@ from github import Github
 from datetime import datetime
 import time
 from github.GithubException import BadCredentialsException
+import urllib.request, json
+from .models import *
 #from Database_store import *
+
+class AppURLopener(urllib.request.FancyURLopener):
+    version = "Mozilla/5.0"
 
 #class for storing language information
 class Lang:
@@ -28,7 +33,7 @@ class Account:
 def api_wait_search(git):
   limits = git.get_rate_limit()
   print(f'remaining limit: {limits.search.remaining}')
-  if limits.search.remaining <= 2:
+  if limits.search.remaining <= 4:
     seconds = (limits.search.reset - datetime.now()).total_seconds()
     print ("Waiting for %d seconds ..." % (seconds))
     time.sleep(seconds)
@@ -43,6 +48,31 @@ def company_query(g, keyword):
     for user in result:
       accounts.append(Account(user.login, user.repos_url))
     return accounts
+
+def repo_query(g, user):
+    query = f'user:"{user}""'
+    result = g.search_repositories(query)
+    return result
+    count = 0
+    for repo in result:
+      repo_name = repo.name
+      stargazer = int(repo.stargazers_count)
+      r = Repo(username = user, repo_name = repo_name, stargazer = stargazer)
+      r.save()
+      #access language information
+      with urllib.request.urlopen(repo.languages_url) as url:
+        data = json.loads(url.read().decode())
+        for i in data.keys():
+          c = int(data[i])
+          l = Lang(repo = repo.name, language = i, count = c)
+          l.save()
+      count = count + 1
+      if (count > 25):
+        api_wait_search(g)
+        count = 0
+      
+
+    return
 
 #initialze github access
 """
@@ -80,4 +110,6 @@ print(f'remaining limit: {limits.search.remaining}')
 for user in google_users[:2]:
   print(f'login: {user.login}')
   print(f'repos: {user.repos_url}')
+  repo_query(g, user.login)
+
 """
