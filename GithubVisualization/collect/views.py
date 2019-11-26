@@ -14,12 +14,21 @@ import requests
 
 # Create your views here.
 
-
 def index(request):
-    #BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-    #FILE_DIR = os.path.join(BASE_DIR, 'collect/test.py')
-    #out = run([sys.executable, FILE_DIR], shell= False, stdout=PIPE)
-    #print(f'\n{out.stdout}\n')
+    return render(request, 'collect/collect.html')
+
+def getdata(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    try:
+        g = Github(username, password)
+        g.get_rate_limit() #test if it raise BadCredentialsException
+    except BadCredentialsException:
+        print('login information not valid!')
+        return render(request, 'collect/collect.html', {'message': "login information not valid!"})
+
+
     user_name = 'Jane616'
     password = 'Jane@990616'
     g = Github(user_name, password)
@@ -33,22 +42,20 @@ def index(request):
     keyword = 'google'
     google_users = company_query(g, keyword)
     print(f'Found {len(google_users)} {keyword} employees')
-    api_wait_search(g)
-    #print('new sleeping for 50 seconds to reset search limit')
-    #time.sleep(50)
+
+    print('new sleeping for 50 seconds to reset search limit')
+    time.sleep(50)
 
     print(microsoft_users[len(microsoft_users) - 1].login)
 
-    """
+    
     for user in microsoft_users:
         u = User(company = "microsoft", login = user.login)
         u.save()
 
     for user in google_users:
         u = User(company = "google", login = user.login)
-        u.save()
-    """
-
+        u.save()    
     
     count = 0
     users = google_users + microsoft_users
@@ -63,12 +70,11 @@ def index(request):
             stargazer = int(repo.stargazers_count)
             r = Repo(username = user.login, repo_name = repo_name, stargazer = stargazer)
             r.save()
-            #a = user.login + '/' + repo_name
+
             #access language information
             response = requests.get(repo.languages_url,
                             auth=requests.auth.HTTPBasicAuth(user_name, password))
             data = response.json()
-            #data = json.loads(response.json().decode())
             for i in data.keys():
                 if str(data[i]).isdigit():
                     c = int(data[i])
@@ -76,7 +82,7 @@ def index(request):
                     l.save()
                 
             count = count + 1
-            #print(count)
+
             if (count > 25):
                 api_wait_search(g)
                 count = 0
