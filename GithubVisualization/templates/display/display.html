@@ -22,9 +22,9 @@ body {
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 20, bottom: 75, left: 40},
+    width = 2000 - margin.left - margin.right,
+    height = 2000 - margin.top - margin.bottom;
 
 var x0 = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -65,7 +65,13 @@ d3.json("{% url "return_json" %}", function(error, data) {
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .selectAll("text")
+        .attr("dx", ".35em")
+        .attr("dy", "-.15em")
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start")
+        .style("font-size", "5px");
 
   svg.append("g")
       .attr("class", "y axis")
