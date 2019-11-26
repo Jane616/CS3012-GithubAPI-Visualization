@@ -10,6 +10,6 @@ def index(request):
     return render(request, 'display/display.html')
 
 def return_json(request):
-    file = open(os.path.join(settings.BASE_DIR, 'export/data.json'))
+    file = open(os.path.join(settings.BASE_DIR, 'data_out.json'))
     j = json.load(file)
     return JsonResponse(list(j), safe=False)
