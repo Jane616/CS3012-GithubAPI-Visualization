@@ -4,6 +4,9 @@ import json
 
 # Create your views here.
 def index(request):
+    return render(request, 'export/export.html')
+
+def export1(request):
     microsoft_lang = {}
     google_lang = {}
     microsoft_count = 0
@@ -72,4 +75,4 @@ def index(request):
         json.dump(data, outfile)
     
 
-    return render(request, 'export/export.html', {'message': "done!"})
+    return render(request, 'export/export.html', {'message': "export 1 done!"})
