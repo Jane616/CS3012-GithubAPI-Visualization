@@ -55,13 +55,13 @@ def export1(request):
         value.append(
             {
                 'value' : microsoft_value,
-                'rate' : 'microsoft'
+                'company' : 'microsoft'
             }
         )
         value.append(
             {
                 'value' : google_value,
-                'rate' : 'google'
+                'company' : 'google'
             }
         )
         data.append(
