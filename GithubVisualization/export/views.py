@@ -82,6 +82,8 @@ def export23(request):
     lang_count_gg = {}
     good_at_ms = {}
     good_at_gg = {}
+    ms_count = 0
+    gg_count = 0
 
     #extract info on microsoft employees
     a = User.objects.filter(company = 'microsoft')
@@ -113,6 +115,7 @@ def export23(request):
         print(user)
         if langcount == 0:
             continue
+        ms_count = ms_count + 1
         #record the number of languages a user is familliar with
         if lang_count_ms.__contains__(langcount):
             lang_count_ms[langcount] = lang_count_ms[langcount] + 1
@@ -162,6 +165,7 @@ def export23(request):
                         }
                     )
 
+        gg_count = gg_count + 1
         #record the number of languages a user is familliar with
         if lang_count_gg.__contains__(langcount):
             lang_count_gg[langcount] = lang_count_gg[langcount] + 1
@@ -184,17 +188,18 @@ def export23(request):
 
     #export json on how many languages a employee is familliar with
     counts = list(lang_count_ms.keys()) + list(set(lang_count_gg.keys()) - set(lang_count_ms.keys()))
+    counts.sort()
     data = []
 
     for count in counts:
         print(f'recording count: {count}')
         value = []
         if lang_count_ms.__contains__(count):
-            ms_value = lang_count_ms[count]
+            ms_value = lang_count_ms[count] / ms_count * 100
         else:
             ms_value = 0
         if lang_count_gg.__contains__(count):
-            gg_value = lang_count_gg[count]
+            gg_value = lang_count_gg[count] / gg_count * 100
         else:
             gg_value = 0
 
@@ -228,11 +233,11 @@ def export23(request):
         print(f'recording lang: {lang}')
         value = []
         if good_at_ms.__contains__(lang):
-            ms_value = good_at_ms[lang]
+            ms_value = good_at_ms[lang] / ms_count * 100
         else:
             ms_value = 0
         if good_at_gg.__contains__(lang):
-            gg_value = good_at_gg[lang]
+            gg_value = good_at_gg[lang] / gg_count * 100
         else:
             gg_value = 0
 

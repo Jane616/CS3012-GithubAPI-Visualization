@@ -15,7 +15,10 @@ def display1(request):
 def display2(request):
     return render(request, 'display/display2.html')
 
-def return_json(request):
+def display3(request):
+    return render(request, 'display/display3.html')
+
+def return_json_1(request):
     file = open(os.path.join(settings.BASE_DIR, 'data_out.json'))
     j = json.load(file)
     return JsonResponse(list(j), safe=False)

@@ -21,7 +21,6 @@ body {
 <body>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
-
 var margin = {top: 20, right: 20, bottom: 75, left: 40},
     width = 1000 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -67,11 +66,10 @@ d3.json("{% url "return_json_2" %}", function(error, data) {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
       .selectAll("text")
-        .attr("dx", ".35em")
-        .attr("dy", "-.15em")
-        .attr("transform", "rotate(90)")
-        .style("text-anchor", "start")
-        .style("font-size", "20px");
+        .attr("dx", ".15em")
+        .attr("dy", ".55em")
+   
+        .style("font-size", "10px");
 
   svg.append("g")
       .attr("class", "y axis")
@@ -140,6 +138,10 @@ d3.json("{% url "return_json_2" %}", function(error, data) {
   legend.transition().duration(500).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
 
 });
+
+
+
+
 
 </script>
 <br><br><br>
