@@ -4,7 +4,6 @@ import time
 from github.GithubException import BadCredentialsException
 import urllib.request, json
 from .models import *
-#from Database_store import *
 
 class AppURLopener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0"
@@ -54,64 +53,5 @@ def repo_query(g, user):
     result = g.get_user(login = user).get_repos()
     #result = g.search_repositories(query)
     return result
-    count = 0
-    for repo in result:
-      repo_name = repo.name
-      stargazer = int(repo.stargazers_count)
-      r = Repo(username = user, repo_name = repo_name, stargazer = stargazer)
-      r.save()
-      #access language information
-      with urllib.request.urlopen(repo.languages_url) as url:
-        data = json.loads(url.read().decode())
-        for i in data.keys():
-          if data[i].isdigit():
-            c = int(data[i])
-            l = Lang(repo = repo.name, language = i, count = c)
-            l.save()
-      count = count + 1
-      if (count > 25):
-        api_wait_search(g)
-        count = 0
-      
 
-    return
 
-#initialze github access
-"""
-while True:
-  print('please input your username: ')
-  user_name = input()
-  print('please input your password: ')
-  password = input()
-  try:
-    g = Github(user_name, password)
-    g.get_rate_limit() #test if it raise BadCredentialsException
-  except BadCredentialsException:
-      print('login information not valid!')
-      continue
-  else:
-      print('login success')
-      break
-
-#search microsoft employees
-api_wait_search(g)
-keyword = 'microsoft'
-microsoft_users = company_query(g, keyword)
-print(f'Found {len(microsoft_users)} {keyword} employees')
-
-#search google employees
-limits = g.get_rate_limit()
-print(f'remaining limit: {limits.search.remaining}')
-keyword = 'google'
-google_users = company_query(g, keyword)
-print(f'Found {len(google_users)} {keyword} employees')
-
-limits = g.get_rate_limit()
-print(f'remaining limit: {limits.search.remaining}')
-
-for user in google_users[:2]:
-  print(f'login: {user.login}')
-  print(f'repos: {user.repos_url}')
-  repo_query(g, user.login)
-
-"""

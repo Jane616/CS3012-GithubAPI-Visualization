@@ -91,7 +91,7 @@ def export23(request):
         user = []
         langcount = 0
         b = Repo.objects.filter(username = auser.login)
-        print(f'recording user: {auser.login}')
+
         for repo in b:
             c = Lang.objects.filter(repo = repo.repo_name)
             print(f'recording repo: {repo.repo_name}')
@@ -112,7 +112,7 @@ def export23(request):
                             'count' : lang.count
                         }
                     )
-        print(user)
+
         if langcount == 0:
             continue
         ms_count = ms_count + 1
