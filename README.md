@@ -14,14 +14,6 @@ This project is done using Python and Javascript, d3.js, Pygithub and Django lib
 
 The db.sqlite3 in the project folder is already inserted with collected data from github. The 3 json files in project folder is the json files exported by the application.
 
-# set up
-- download GithubVisualization folder.
-- install Pygithub, Django library using 'pip --install'.
-- navigate terminal to where the manage.py is.
-- type in command: 'python manage.py runserver'.
-- After the server is setup, open browser and type in url: 127.0.0.1:8000/ .
-- Then you will see the home page that navigate to the three applications.
-
 # collect
 Collect application will first ask for github username and password, if the inputs are valid credencials, then the data collection will begin. The collect application interrogate the github API for information about Google and Microsoft employees and the languages used in their repositories, then insert those information into sqlite database. THe progress of the collection process can be seen from the terminal, the whole process takes about 5-6 hours. After the process is completed then a message "done!" should appear, but it may not appear and give an error because browser has stopped waiting, but this does not mean data collection is not completed.
 
